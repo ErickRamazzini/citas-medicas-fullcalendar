@@ -33,4 +33,14 @@ class CitaRepository
         $cita->update($datos);
         return $cita->load(['paciente', 'doctor']);
     }
+
+    public function existeSolapamiento(int $doctorId, string $inicio, string $fin, ?int $excluirId = null): bool
+    {
+        return Cita::where('doctor_id', $doctorId)
+            ->whereIn('estado', ['pendiente', 'confirmada'])
+            ->where('inicio', '<', $fin)
+            ->where('fin', '>', $inicio)
+            ->when($excluirId, fn ($q, $id) => $q->where('id', '!=', $id))
+            ->exists();
+    }
 }
