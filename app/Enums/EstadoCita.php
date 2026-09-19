@@ -18,4 +18,18 @@ enum EstadoCita: string
             self::Atendida => '#10b981',
         };
     }
+
+    public function puedeCambiarA(self $nuevo): bool
+    {
+        return match ($this) {
+            self::Pendiente => in_array($nuevo, [self::Confirmada, self::Cancelada]),
+            self::Confirmada => in_array($nuevo, [self::Atendida, self::Cancelada]),
+            self::Cancelada, self::Atendida => false,
+        };
+    }
+
+    public function esActiva(): bool
+    {
+        return in_array($this, [self::Pendiente, self::Confirmada]);
+    }
 }
